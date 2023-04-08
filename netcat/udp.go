@@ -59,7 +59,7 @@ func DoDialUDP(remote string, policy pan.Policy) (io.ReadWriteCloser, error) {
 	if err != nil {
 		return nil, err
 	}
-	conn, err := pan.DialUDP(context.Background(), netaddr.IPPort{}, remoteAddr, policy, nil)
+	conn, err := pan.DialUDP(context.Background(), netaddr.IPPort{}, remoteAddr, policy, nil, false)
 	if err != nil {
 		return nil, err
 	}

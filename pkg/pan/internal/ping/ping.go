@@ -111,7 +111,7 @@ func (p *Pinger) Send(ctx context.Context, remote *snet.UDPAddr,
 			Zone: remote.Host.Zone,
 		}
 	}
-	if err := p.conn.WriteTo(pkt, nextHop); err != nil {
+	if err := p.conn.WriteTo(pkt, nextHop, false); err != nil {
 		return err
 	}
 	return nil

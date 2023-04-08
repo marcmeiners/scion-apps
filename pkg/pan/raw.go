@@ -61,6 +61,7 @@ type baseUDPConn struct {
 	readBuffer  []byte
 	writeMutex  sync.Mutex
 	writeBuffer []byte
+	isColibri   bool
 }
 
 func (c *baseUDPConn) SetDeadline(t time.Time) error {
@@ -122,7 +123,7 @@ func (c *baseUDPConn) writeMsg(src, dst UDPAddr, path *Path, b []byte) (int, err
 		},
 	}
 
-	err := c.raw.WriteTo(pkt, nextHop.UDPAddr())
+	err := c.raw.WriteTo(pkt, nextHop.UDPAddr(), c.isColibri)
 	if err != nil {
 		return 0, err
 	}

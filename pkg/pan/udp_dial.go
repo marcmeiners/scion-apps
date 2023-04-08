@@ -45,7 +45,7 @@ type Conn interface {
 // If the policy is nil, all paths are allowed.
 // If the selector is nil, a DefaultSelector is used.
 func DialUDP(ctx context.Context, local netaddr.IPPort, remote UDPAddr,
-	policy Policy, selector Selector) (Conn, error) {
+	policy Policy, selector Selector, isColibri bool) (Conn, error) {
 
 	local, err := defaultLocalAddr(local)
 	if err != nil {
@@ -68,7 +68,8 @@ func DialUDP(ctx context.Context, local netaddr.IPPort, remote UDPAddr,
 	}
 	return &dialedConn{
 		baseUDPConn: baseUDPConn{
-			raw: raw,
+			raw:       raw,
+			isColibri: isColibri,
 		},
 		local:      slocal,
 		remote:     remote,

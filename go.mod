@@ -20,3 +20,5 @@ require (
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	inet.af/netaddr v0.0.0-20210903134321-85fa6c94624e
 )
+
+replace github.com/scionproto/scion => ../scion

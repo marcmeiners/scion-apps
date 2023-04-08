@@ -268,6 +268,7 @@ func main() {
 		interactive  bool
 		sequence     string
 		preference   string
+		colibri      bool
 	)
 
 	flag.Usage = printUsage
@@ -280,6 +281,7 @@ func main() {
 	flag.StringVar(&preference, "preference", "", "Preference sorting order for paths. "+
 		"Comma-separated list of available sorting options: "+
 		strings.Join(pan.AvailablePreferencePolicies, "|"))
+	flag.BoolVar(&colibri, "colibri", false, "send colibri packets")
 
 	flag.Parse()
 	flagset := make(map[string]bool)
@@ -321,7 +323,7 @@ func main() {
 	fmt.Printf("server->client: %d seconds, %d bytes, %d packets\n",
 		int(serverBwp.BwtestDuration/time.Second), serverBwp.PacketSize, serverBwp.NumPackets)
 
-	clientRes, serverRes, err := runBwtest(local.Get(), serverCCAddr, policy, clientBwp, serverBwp)
+	clientRes, serverRes, err := runBwtest(local.Get(), serverCCAddr, policy, clientBwp, serverBwp, colibri)
 	bwtest.Check(err)
 
 	fmt.Println("\nS->C results")
@@ -332,11 +334,11 @@ func main() {
 
 // runBwtest runs the bandwidth test with the given parameters against the server at serverCCAddr.
 func runBwtest(local netaddr.IPPort, serverCCAddr pan.UDPAddr, policy pan.Policy,
-	clientBwp, serverBwp bwtest.Parameters) (clientRes, serverRes bwtest.Result, err error) {
+	clientBwp, serverBwp bwtest.Parameters, isColibri bool) (clientRes, serverRes bwtest.Result, err error) {
 
 	// Control channel connection
 	ccSelector := pan.NewDefaultSelector()
-	ccConn, err := pan.DialUDP(context.Background(), local, serverCCAddr, policy, ccSelector)
+	ccConn, err := pan.DialUDP(context.Background(), local, serverCCAddr, policy, ccSelector, false)
 	if err != nil {
 		return
 	}
@@ -346,7 +348,7 @@ func runBwtest(local netaddr.IPPort, serverCCAddr pan.UDPAddr, policy pan.Policy
 	serverDCAddr := serverCCAddr.WithPort(serverCCAddr.Port + 1)
 
 	// Data channel connection
-	dcConn, err := pan.DialUDP(context.Background(), dcLocal, serverDCAddr, policy, nil)
+	dcConn, err := pan.DialUDP(context.Background(), dcLocal, serverDCAddr, policy, nil, isColibri)
 	if err != nil {
 		return
 	}

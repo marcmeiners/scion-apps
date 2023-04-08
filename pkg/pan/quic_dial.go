@@ -56,7 +56,7 @@ func DialQUIC(ctx context.Context,
 	local netaddr.IPPort, remote UDPAddr, policy Policy, selector Selector,
 	host string, tlsConf *tls.Config, quicConf *quic.Config) (*QUICSession, error) {
 
-	conn, err := DialUDP(ctx, local, remote, policy, selector)
+	conn, err := DialUDP(ctx, local, remote, policy, selector, false)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func DialQUICEarly(ctx context.Context,
 	local netaddr.IPPort, remote UDPAddr, policy Policy, selector Selector,
 	host string, tlsConf *tls.Config, quicConf *quic.Config) (*QUICEarlySession, error) {
 
-	conn, err := DialUDP(ctx, local, remote, policy, selector)
+	conn, err := DialUDP(ctx, local, remote, policy, selector, false)
 	if err != nil {
 		return nil, err
 	}
